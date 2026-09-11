@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jon Belsky — Design Portfolio</title>
+<meta name="description" content="A new portfolio is on its way — showcasing work across product strategy, UX systems, and design leadership." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #f4f4f2;
+    --text: #090909;
+    --text-secondary: rgba(9, 9, 9, 0.55);
+    --muted: #a1a1a1;
+    --accent: #1ce301;
+    --border: rgba(9, 9, 9, 0.1);
+    --field-border: rgba(9, 9, 9, 0.14);
+    --field-bg: rgba(9, 9, 9, 0.02);
+
+    --font-display: "Hedvig Letters Serif", Georgia, "Times New Roman", serif;
+    --font-body: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-label: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Page shell ---------- */
+  .page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 40px;
+  }
+
+  .logo { display: block; width: 92px; height: auto; }
+
+  /* ---------- Let's Chat button ---------- */
+  .chat-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 13px 28px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+  }
+  .chat-btn:hover { opacity: 0.88; }
+  .chat-btn:active { transform: scale(0.98); }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(28, 227, 1, 0.22);
+    flex-shrink: 0;
+  }
+
+  /* ---------- Main ---------- */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+  }
+
+  .headline {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    max-width: 15ch;
+  }
+
+  .body-copy {
+    margin-top: 28px;
+    max-width: 34rem;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .chat-btn--inline { display: none; margin-top: 40px; }
+
+  /* ---------- Stats ---------- */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+    margin-top: 64px;
+  }
+
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+  .stat__num {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .stat__label { font-size: 13px; color: var(--muted); }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 40px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .footer__links { display: flex; gap: 24px; }
+  .footer a { text-decoration: none; transition: color 0.15s ease; }
+  .footer a:hover { color: var(--text); }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 9, 9, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+  }
+  .overlay.is-open { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    background: var(--bg);
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 30px 80px -20px rgba(9, 9, 9, 0.35);
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.2s ease;
+  }
+  .overlay.is-open .modal { transform: translateY(0) scale(1); }
+
+  .modal__label {
+    font-family: var(--font-label);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .modal__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-top: 10px;
+  }
+
+  .modal__close {
+    position: absolute;
+    top: 26px;
+    right: 26px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--field-border);
+    background: transparent;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .modal__close:hover { background: rgba(9, 9, 9, 0.06); }
+
+  .form { margin-top: 28px; }
+
+  .form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .field label { font-size: 13px; font-weight: 500; }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color 0.15s ease;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--muted); }
+  .field input:focus,
+  .field textarea:focus { outline: none; border-color: var(--text); }
+  .field textarea { resize: vertical; min-height: 120px; }
+
+  .submit-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--text);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 17px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.15s ease;
+  }
+  .submit-btn:hover { opacity: 0.88; }
+
+  .form__fallback {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .form__fallback a { color: var(--text); text-underline-offset: 3px; }
+
+  /* ---------- Confirmation ---------- */
+  .confirmation { margin-top: 28px; text-align: center; padding: 20px 0 8px; }
+  .confirmation__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .confirmation h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+  }
+  .confirmation p { margin-top: 10px; font-size: 14px; color: var(--text-secondary); }
+
+  /* ---------- Tablet ---------- */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .header { padding: 28px 36px; }
+    .logo { width: 84px; }
+
+    .main { padding: 64px 40px; }
+
+    .headline {
+      font-size: clamp(48px, 5.08vw, 52px);
+      max-width: 18ch;
+    }
+
+    .body-copy {
+      margin-top: 24px;
+      max-width: 38rem;
+      font-size: 16px;
+    }
+
+    .stats {
+      gap: 48px;
+      margin-top: 56px;
+    }
+    .stat__num { font-size: 32px; }
+    .stat__label { font-size: 13px; }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 767px) {
+    html, body { height: 100%; overflow: hidden; }
+
+    .page {
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .header {
+      flex-shrink: 0;
+      justify-content: center;
+      padding: max(18px, env(safe-area-inset-top)) 20px 0;
+    }
+    .header .chat-btn { display: none; }
+    .logo { width: clamp(64px, 20vw, 80px); }
+
+    .main {
+      min-height: 0;
+      overflow: hidden;
+      padding: clamp(8px, 2.5vh, 28px) 20px;
+    }
+
+    .headline {
+      font-size: clamp(21px, 6vh, 38px);
+      line-height: 1.1;
+      max-width: 17ch;
+    }
+
+    .body-copy {
+      margin-top: clamp(10px, 2vh, 20px);
+      max-width: 32ch;
+      font-size: clamp(12px, 2.6vh, 14px);
+      line-height: 1.5;
+    }
+
+    .chat-btn--inline {
+      display: inline-flex;
+      margin-top: clamp(14px, 3vh, 28px);
+      padding: 11px 22px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(14px, 3vh, 32px) 20px;
+      margin-top: clamp(16px, 3.5vh, 40px);
+      width: 100%;
+      max-width: 320px;
+    }
+    .stat:nth-child(3) { grid-column: 1 / -1; }
+    .stat__num { font-size: clamp(19px, 4.4vh, 30px); }
+    .stat__label { font-size: clamp(10px, 2vh, 12px); }
+
+    .footer {
+      flex-shrink: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: clamp(10px, 2vh, 18px) 20px calc(clamp(10px, 2vh, 18px) + env(safe-area-inset-bottom));
+      text-align: left;
+      font-size: 12px;
+    }
+    .footer__links { gap: 18px; }
+
+    .modal { padding: 28px 22px; }
+    .modal__title { font-size: 26px; }
+    .modal__close { top: 20px; right: 20px; }
+    .form__row { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <svg class="logo" width="100" height="32" viewBox="0 0 100 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="J / B — Jon Belsky">
+      <g clip-path="url(#logo-clip)">
+        <path d="M80.8064 5.41205C83.4854 5.40805 87.6184 5.01005 88.5854 8.43105C88.8954 9.52705 88.7714 10.7731 88.2124 11.7771C87.3324 13.3601 85.8764 13.9691 84.2364 14.4421C85.5214 14.6351 86.4514 14.7981 87.6284 15.3831C90.2144 16.6691 91.0334 19.6711 89.7164 22.2061C89.0264 23.3691 88.0994 24.1121 86.8514 24.5931C85.4394 25.1371 84.0204 25.0711 82.5394 25.0711L79.2934 25.0691L76.6684 25.0701C76.3734 25.0711 75.0084 25.1351 74.8594 24.9511C74.9474 24.4121 76.8734 24.9171 76.9674 23.5831C77.0304 22.6891 77.0044 21.6881 77.0044 20.7871L76.9994 15.8911L77.0024 10.0671C77.0024 9.05405 77.0234 7.99405 76.9814 6.98105C76.9254 5.64105 75.2174 5.99405 74.8974 5.71105C74.8504 5.59005 74.8724 5.54505 74.9064 5.41905L80.8064 5.41205ZM86.2524 16.1641C84.6234 14.5991 81.8074 14.8471 79.7074 14.8821L79.7054 20.4801C79.7054 21.0721 79.7074 21.7181 79.7054 22.3131C79.7014 24.0181 79.7104 24.5801 81.5724 24.6061C83.3984 24.6321 84.8064 24.5631 86.2334 23.2081C87.9874 21.3221 88.1554 17.9921 86.2524 16.1641ZM86.1084 10.0311C86.2714 6.05305 83.5084 5.73905 80.3704 5.91605L79.7304 5.97405C79.6314 8.56605 79.7054 11.6071 79.7054 14.2451C81.5054 14.2541 83.2014 14.5161 84.6684 13.4051C85.6824 12.4571 86.0524 11.3871 86.1084 10.0311Z" fill="#090909" />
+        <path d="M12.358 5.46697L16.858 5.46297C17.473 5.46297 18.739 5.42797 19.301 5.49797C19.38 5.57297 19.355 5.55397 19.362 5.69497C19.216 5.97397 18.27 5.78297 17.665 6.17797C17.428 6.33397 17.264 6.57797 17.209 6.85597C17.13 7.24997 17.162 9.30997 17.162 9.83497L17.165 16.672C17.167 17.998 17.227 19.379 17.118 20.697C16.788 24.707 13.159 25.836 9.79203 25.084C7.37603 24.518 7.40603 21.877 9.17403 21.639C9.52903 21.593 9.88803 21.691 10.169 21.913C11.394 22.868 9.81003 25.232 12.191 24.757C14.86 24.224 14.506 20.75 14.505 18.686L14.507 13.884V9.55197C14.507 8.63297 14.556 7.65897 14.413 6.75497C14.253 5.75097 12.622 5.95397 12.378 5.78797C12.307 5.63097 12.331 5.66797 12.358 5.46697Z" fill="#090909" />
+        <path d="M46.2973 15.9753C47.0011 14.9731 47.8687 13.8651 48.6097 12.8784L52.5977 7.57942C52.9285 7.14377 54.3394 5.17177 54.6091 4.96178C54.8458 4.92852 55 5.00467 55.0711 5.24103C55.0078 5.54769 47.9718 14.7517 47.1275 15.8722L40.7398 24.3539C40.2385 25.0192 39.7194 25.6748 39.2451 26.3591C39.0675 26.6147 38.9419 26.8845 38.598 26.8357C38.4357 26.7071 38.4759 26.77 38.4165 26.5863C38.4529 26.3369 40.3157 23.958 40.5948 23.586L46.2973 15.9753Z" fill="#090909" />
+      </g>
+      <defs>
+        <clipPath id="logo-clip"><rect width="100" height="32" fill="white" /></clipPath>
+      </defs>
+    </svg>
+
+    <button class="chat-btn" data-open-modal>
+      <span class="dot"></span>
+      Let's Chat
+    </button>
+  </header>
+
+  <main class="main">
+    <h1 class="headline">Hands-on design leadership for products that scale.</h1>
+    <p class="body-copy">A new portfolio is on its way — showcasing work across product strategy, UX systems, and design leadership. In the meantime, let's connect.</p>
+
+    <button class="chat-btn chat-btn--inline" data-open-modal>
+      <span class="dot"></span>
+      Let's Chat
+    </button>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat__num">$1B+</span>
+        <span class="stat__label">Revenue impact</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">100M+</span>
+        <span class="stat__label">Users reached</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">18</span>
+        <span class="stat__label">Years experience</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 Jon Belsky</span>
+    <span class="footer__links">
+      <a href="https://www.linkedin.com/in/jonbelsky/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:jonbelsky@gmail.com">jonbelsky@gmail.com</a>
+    </span>
+  </footer>
+</div>
+
+<!-- Contact modal -->
+<div class="overlay" data-overlay role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal">
+    <button class="modal__close" data-close-modal aria-label="Close">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L14 14M14 1L1 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <p class="modal__label">Get in touch</p>
+    <h2 class="modal__title" id="modal-title">Let's build something together.</h2>
+
+    <form class="form" data-form>
+      <div class="form__row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Tell me about your project..." required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        Send Message
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 7H16M16 7L10 1M16 7L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <p class="form__fallback">Or reach me directly at <a href="mailto:jonbelsky@gmail.com">jonbelsky@gmail.com</a></p>
+    </form>
+
+    <div class="confirmation" data-confirmation hidden>
+      <div class="confirmation__icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 10.5L8 14.5L16 5.5" stroke="#090909" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h3>Message sent.</h3>
+      <p>Thanks for reaching out — I'll get back to you shortly.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var overlay = document.querySelector("[data-overlay]");
+    var form = overlay.querySelector("[data-form]");
+    var confirmation = overlay.querySelector("[data-confirmation]");
+    var lastFocused = null;
+
+    function openModal() {
+      lastFocused = document.activeElement;
+      overlay.hidden = false;
+      // force reflow so the transition runs
+      overlay.offsetHeight; // eslint-disable-line no-unused-expressions
+      overlay.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+      var firstInput = form.querySelector("input, textarea");
+      if (firstInput && !form.hidden) firstInput.focus();
+    }
+
+    function closeModal() {
+      overlay.classList.remove("is-open");
+      document.body.style.overflow = "";
+      window.setTimeout(function () {
+        overlay.hidden = true;
+        // reset to form state for next open
+        form.hidden = false;
+        confirmation.hidden = true;
+        form.reset();
+      }, 200);
+      if (lastFocused) lastFocused.focus();
+    }
+
+    document.querySelectorAll("[data-open-modal]").forEach(function (btn) {
+      btn.addEventListener("click", openModal);
+    });
+
+    document.querySelectorAll("[data-close-modal]").forEach(function (btn) {
+      btn.addEventListener("click", closeModal);
+    });
+
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) closeModal();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) closeModal();
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      form.hidden = true;
+      confirmation.hidden = false;
+    });
+  })();
+</script>
+</body>
+</html>
