@@ -91,7 +91,7 @@
     color: #fff;
     border: none;
     border-radius: 40px;
-    padding: 13px 28px;
+    padding: 17px 28px;
     font-family: var(--font-body);
     font-weight: 500;
     font-size: 11px;
@@ -177,7 +177,7 @@
     letter-spacing: -0.01em;
   }
 
-  .stat__label { font-size: 13px; color: var(--muted); }
+  .stat__label { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.04em; }
 
   /* ---------- Footer ---------- */
   .footer {
@@ -339,24 +339,26 @@
   .form__fallback a { color: var(--text); text-underline-offset: 3px; }
 
   /* ---------- Confirmation ---------- */
-  .confirmation { margin-top: 28px; text-align: center; padding: 20px 0 8px; }
+  .confirmation { text-align: center; padding: 24px 0 16px; }
   .confirmation__icon {
-    width: 44px;
-    height: 44px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 18px;
+    margin: 0 auto 24px;
   }
   .confirmation h3 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 24px;
+    font-size: 32px;
     letter-spacing: -0.01em;
   }
-  .confirmation p { margin-top: 10px; font-size: 14px; color: var(--text-secondary); }
+  .confirmation p { margin-top: 10px; font-size: 15px; color: var(--text-secondary); }
+
+  .modal.is-success [data-modal-header] { display: none; }
 
   /* ---------- Tablet ---------- */
   @media (min-width: 768px) and (max-width: 1024px) {
@@ -430,7 +432,7 @@
     .chat-btn--inline {
       display: inline-flex;
       margin-top: clamp(14px, 3vh, 28px);
-      padding: 11px 22px;
+      padding: 15px 22px;
     }
 
     .stats {
@@ -485,7 +487,7 @@
 
   <main class="main">
     <h1 class="headline">Hands-on design leadership for products that scale.</h1>
-    <p class="body-copy">A new portfolio is on its way — showcasing work across product strategy, UX systems, and design leadership. In the meantime, let's connect.</p>
+    <p class="body-copy">A new portfolio is on its way — showcasing work across product strategy, UX systems, and design leadership.</p>
 
     <button class="chat-btn chat-btn--inline" data-open-modal>
       <span class="dot"></span>
@@ -526,8 +528,10 @@
       </svg>
     </button>
 
-    <p class="modal__label">Get in touch</p>
-    <h2 class="modal__title" id="modal-title">Let's build something together.</h2>
+    <div data-modal-header>
+      <p class="modal__label">Get in touch</p>
+      <h2 class="modal__title" id="modal-title">Let's build something together.</h2>
+    </div>
 
     <form
       class="form"
@@ -566,12 +570,12 @@
 
     <div class="confirmation" data-confirmation hidden>
       <div class="confirmation__icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 10.5L8 14.5L16 5.5" stroke="#090909" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 10.5L8 14.5L16 5.5" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
-      <h3>Message sent.</h3>
-      <p>Thanks for reaching out — I'll get back to you shortly.</p>
+      <h3>Thanks for reaching out!</h3>
+      <p>I'll get back to you shortly.</p>
     </div>
   </div>
 </div>
@@ -579,6 +583,7 @@
 <script>
   (function () {
     var overlay = document.querySelector("[data-overlay]");
+    var modal = overlay.querySelector(".modal");
     var form = overlay.querySelector("[data-form]");
     var confirmation = overlay.querySelector("[data-confirmation]");
     var errorMsg = form.querySelector("[data-form-error]");
@@ -606,6 +611,7 @@
         form.hidden = false;
         confirmation.hidden = true;
         errorMsg.hidden = true;
+        modal.classList.remove("is-success");
         form.reset();
       }, 200);
       if (lastFocused) lastFocused.focus();
@@ -647,6 +653,7 @@
           if (response.ok) {
             form.hidden = true;
             confirmation.hidden = false;
+            modal.classList.add("is-success");
           } else {
             throw new Error("Form submission failed");
           }
