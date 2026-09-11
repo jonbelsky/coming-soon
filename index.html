@@ -99,18 +99,34 @@
     text-transform: uppercase;
     white-space: nowrap;
     cursor: pointer;
-    transition: transform 0.18s ease, opacity 0.18s ease;
+    transition: background-color 0.18s ease;
   }
-  .chat-btn:hover { opacity: 0.88; }
-  .chat-btn:active { transform: scale(0.98); }
+  .chat-btn:hover { background: #262626; }
 
   .dot {
+    position: relative;
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: var(--accent);
     box-shadow: 0 0 0 3px rgba(28, 227, 1, 0.22);
     flex-shrink: 0;
+  }
+  .dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: dot-pulse 2.2s ease-out infinite;
+  }
+  @keyframes dot-pulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    70% { transform: scale(3.2); opacity: 0; }
+    100% { transform: scale(3.2); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dot::after { animation: none; }
   }
 
   /* ---------- Main ---------- */
@@ -243,9 +259,12 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
-  .modal__close:hover { background: rgba(9, 9, 9, 0.06); }
+  .modal__close:hover {
+    background: rgba(9, 9, 9, 0.06);
+    border-color: rgba(9, 9, 9, 0.28);
+  }
 
   .form { margin-top: 28px; }
 
@@ -294,9 +313,13 @@
     text-transform: uppercase;
     cursor: pointer;
     margin-top: 4px;
-    transition: opacity 0.15s ease;
+    transition: background-color 0.15s ease;
   }
-  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:hover { background: #262626; }
+  .submit-btn:disabled:hover { background: var(--text); }
+
+  .submit-btn svg { transition: transform 0.18s ease; }
+  .submit-btn:hover svg { transform: translateX(3px); }
   .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .form__error {
@@ -359,6 +382,13 @@
     }
     .stat__num { font-size: 32px; }
     .stat__label { font-size: 13px; }
+
+    .footer {
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
   }
 
   /* ---------- Mobile ---------- */
@@ -418,10 +448,10 @@
     .footer {
       flex-shrink: 0;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 6px;
       padding: clamp(10px, 2vh, 18px) 20px calc(clamp(10px, 2vh, 18px) + env(safe-area-inset-bottom));
-      text-align: left;
+      text-align: center;
       font-size: 12px;
     }
     .footer__links { gap: 18px; }
