@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Vercel local cache (created by `vercel dev` / `vercel link`)
+.vercel
+
+# Editor/OS cruft
+*.log
